@@ -11,6 +11,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		277455C32E0C2C4B00C14ADC /* Rough */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Rough;
+			sourceTree = "<group>";
+		};
 		2791A44C2E0974C70059693E /* APIServiceNCoreData */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = APIServiceNCoreData;
@@ -32,6 +37,7 @@
 		2791A4412E0974C70059693E = {
 			isa = PBXGroup;
 			children = (
+				277455C32E0C2C4B00C14ADC /* Rough */,
 				2791A44C2E0974C70059693E /* APIServiceNCoreData */,
 				2791A44B2E0974C70059693E /* Products */,
 			);
@@ -61,6 +67,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				277455C32E0C2C4B00C14ADC /* Rough */,
 				2791A44C2E0974C70059693E /* APIServiceNCoreData */,
 			);
 			name = APIServiceNCoreData;
