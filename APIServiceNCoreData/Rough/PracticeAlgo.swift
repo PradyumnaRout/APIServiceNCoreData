@@ -506,7 +506,238 @@ final class SemaphoreCounter {
 
 
 
-// MARK: -  COMBINE PUBLISHER, SUBSCRIBERS AND OPERATORS
-// https://medium.com/bumble-tech/understanding-publishers-in-swiftui-and-combine-27806aa78ba1
-// https://medium.com/@lucaspedrazoli/a-handy-list-of-swift-combine-operators-e7b5d640761c
-//https://nikunj-joshi.medium.com/swift-combine-introduction-to-combine-operators-filtering-operators-510d962b95f2
+
+
+// MARK: -  Serial/Coucurrent/Sync/Async
+
+class ExecutionOne {
+    var counter = 0
+    
+    init() {
+//        foo()
+        outputRealtedFuncUsingSerailQueueWithSync()
+//        outputRealtedFuncUsingSerailQueueWithAsync()
+//        outputRealtedFuncUsingConcurrentQueueWithSync()
+//        outputRealtedFuncUsingConcurrentQueueWithAsync()
+//        dispatchGroup()
+    }
+    
+    func foo() {
+        
+        // In the below code if we use sync instead of async it will cause a deadlock because it will block the main thread till the execution complete as it is sync. So no other resources can access the main thread.
+        
+        DispatchQueue.main.async {
+            for i in 0...3 {
+                self.counter = i
+                print("IN first Place \(self.counter)")
+            }
+        }
+        
+        // Will Execute first as the upper block is Async so it will not block the execution
+        for i in 4..<6 {
+            counter = i
+            print("In Second Place \(counter)")
+        }
+        
+        // It will execute at last even if it is async because default the distachqueue.main is serail queue and it will execute one task at a time in FIFO order so the first task will execute first
+        DispatchQueue.main.async {
+            self.counter = 9
+            print("In third Place \(self.counter)")
+        }
+    }
+    
+    
+    // Serial Queue With Sync
+    func outputRealtedFuncUsingSerailQueueWithSync() {
+        let serialQueue = DispatchQueue(label: "serial_queue")
+        var counter = 0
+        
+        // Block the execution as it is sync
+        serialQueue.sync {
+            for i in 1...3 {
+                counter = i
+                print("In First Place \(counter)")
+            }
+        }
+        
+        for i in 4...5 {
+            counter = i
+            print("In Second Place \(counter)")
+        }
+        
+        serialQueue.sync {
+            for i in 6...9 {
+                counter = i
+                print("In Third Place \(counter)")
+            }
+        }
+    }
+    // Output -
+    /**
+     In First Place 1
+     In First Place 2
+     In First Place 3
+     In Second Place 4
+     In Second Place 5
+     In Third Place 6
+     In Third Place 7
+     In Third Place 8
+     In Third Place 9
+     */
+    
+    // In the below function I am using serial queue with async block so it will not block any task but the task will run serially in FIFO order.
+    func outputRealtedFuncUsingSerailQueueWithAsync() {
+        let concurrentQueue = DispatchQueue(label: "serial_queue")
+        var counter = 0
+        
+        concurrentQueue.async {
+            for i in 1...3 {
+                counter = i
+                print("In First Place \(counter)")
+            }
+        }
+        
+        for i in 4...6 {
+            counter = i
+            print("In Second Place \(counter)")
+        }
+        
+        concurrentQueue.async {
+            for i in 7...9 {
+                counter = i
+                print("In Third Place \(counter)")
+            }
+        }
+    }
+    // Output -
+    /**
+     In First Place 4
+     In Second Place 4
+     In First Place 2
+     In Second Place 5
+     In First Place 3
+     In Second Place 6
+     In Third Place 7
+     In Third Place 8
+     In Third Place 9
+     */
+    
+    // It will execute one at a time even if we use concurrent queue because of the manner of execution is sync.
+    func outputRealtedFuncUsingConcurrentQueueWithSync() {
+        let concurrentQueue = DispatchQueue(label: "concurrent_queue", attributes: .concurrent)
+        var counter = 0
+        
+        concurrentQueue.sync {
+            for i in 1...3 {
+                counter = i
+                print("In First Place \(counter)")
+            }
+        }
+        
+        for i in 4...6 {
+            counter = i
+            print("In Second Place \(counter)")
+        }
+        
+        concurrentQueue.sync {
+            for i in 7...9 {
+                counter = i
+                print("In Third Place \(counter)")
+            }
+        }
+    }
+    // - Output
+    /**
+     In First Place 1
+     In First Place 2
+     In First Place 3
+     In Second Place 4
+     In Second Place 5
+     In Second Place 6
+     In Third Place 7
+     In Third Place 8
+     In Third Place 9
+     */
+    
+    func outputRealtedFuncUsingConcurrentQueueWithAsync() {
+        let concurrentQueue = DispatchQueue(label: "concurrent_queue", attributes: .concurrent)
+        var counter = 0
+        
+        concurrentQueue.async {
+            for i in 1...3 {
+                counter = i
+                print("In First Place \(counter)")
+            }
+        }
+        
+        for i in 4...6 {
+            counter = i
+            print("In Second Place \(counter)")
+        }
+        
+        concurrentQueue.async {
+            for i in 7...9 {
+                counter = i
+                print("In Third Place \(counter)")
+            }
+        }
+    }
+    // Output -
+    /**
+     In Second Place 4
+     In First Place 4
+     In First Place 2
+     In Second Place 5
+     In First Place 3
+     In Second Place 6
+     In Third Place 7
+     In Third Place 8
+     In Third Place 9
+     */
+    
+    // DispatchGroup alternate - DispatchSemaphoe, OperationQueue
+    func dispatchGroup() {
+        let dispatchGroup = DispatchGroup()
+        // Serial
+        let serialQueue = DispatchQueue(label: "com.example.disQue")
+        
+        let concurrentQueue = DispatchQueue(label: "com.example.disQue", attributes: .concurrent)
+        
+        // concurrent -
+        // Tasks to be executed concurrently and monitored as a group
+//        concurrentQueue.async(group: dispatchGroup) {
+//            print("Task 1: Start")
+//            print("Task 1 Thread",Thread.current)
+//            // Perform some work
+//            print("Task 1: End")
+//        }
+//        
+//        concurrentQueue.async(group: dispatchGroup) {
+//            print("Task 2: Start")
+//            print("Task 2 Thread",Thread.current)
+//            // Perform some work
+//            print("Task 2: End")
+//        }
+        
+        
+        // Serial -
+        concurrentQueue.sync {
+            print("Task 1: Start")
+            print("Task 1 Thread",Thread.current)
+            // Perform some work
+            print("Task 1: End")
+        }
+        
+        concurrentQueue.sync {
+            print("Task 2: Start")
+            print("Task 2 Thread",Thread.current)
+            // Perform some work
+            print("Task 2: End")
+        }
+        
+        // Wait for all tasks in the group to finish
+        dispatchGroup.wait()
+        print("All tasks are done!")
+    }
+}
+
