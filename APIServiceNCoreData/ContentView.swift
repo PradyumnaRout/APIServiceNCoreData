@@ -10,9 +10,11 @@ import SwiftUI
 struct ContentView: View {
     
 //    var obj = Operation()
-//    var obj = ExecutionOne()
+//    var obj = SerialAndConcurrentQueueExecution()
     
     var obj = CombineOperators()
+//    var obj = VerifyNumber()
+//    var obj = SortingAlgos()
     
     var body: some View {
         VStack {

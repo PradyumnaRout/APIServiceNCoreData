@@ -319,6 +319,124 @@ concurrentQueue.async {
  print(returnPrimeNumber(11))
  */
 
+
+// MARK: - Palindrome Number
+class VerifyNumber {
+    
+    init() {
+        print(checkPalindromeUsingString("121"))
+    }
+    
+    func checkPalindoromeUsingCalculation(_ num: Int) -> Bool {
+        
+        if num < 0 || (num % 10 == 0 && num != 0) {
+            return false
+        }
+        
+        var number = num
+        var reversed = 0
+        
+        while reversed < num {
+            reversed = reversed * 10 + number % 10
+            number /= 10
+        }
+        
+        return (num == reversed)
+    }
+    
+    func checkPalindromeUsingHalfLoop(_ num: Int) -> Bool {
+        if num < 0 || (num % 10 == 0 && num != 0) {
+            return false
+        }
+        
+        var number = num
+        var reversed = 0
+        
+        while number > reversed {
+            reversed = reversed * 10 + number % 10
+            number /= 10
+        }
+        
+        return (number == reversed) || (number == reversed / 10)
+    }
+    
+    func checkPalindromeUsingString(_ value: String) -> Bool {
+        let letters = Array(value.lowercased())
+        
+        for i in 0..<letters.count / 2 {
+            if letters[i] != letters[letters.count - 1 - i] {
+                return false
+            }
+        }
+        
+        return true
+    }
+}
+
+
+// MARK: - Sorting Algos
+class SortingAlgos {
+    var array = [4, 2, 5, 1, 9, 6, 7]
+    init() {
+        insertionSort(&array)
+        print(array)
+    }
+    
+    // Move the largest one to last
+    func bubbleSort(_ array: inout [Int]) {
+        
+        for i in 0..<array.count {
+            
+            var isSwap = false
+            
+            for j in 0..<(array.count - 1 - i) {
+                if array[j] > array[j + 1] {
+                    array.swapAt(j, j + 1)
+                    isSwap = true
+                }
+            }
+            
+            if isSwap == false {
+                return
+            }
+        }
+    }
+    
+    // Move the smallert to first by assuming the first one first and start comparing from 1 th index.
+    func selectionSort(_ array: inout [Int]) {
+        
+        for i in 0..<array.count {
+            var sIndex = i
+            
+            for j in (i + 1)..<array.count {
+                if array[j] < array[sIndex] {
+                    sIndex = j
+                }
+            }
+            
+            if i != sIndex {
+                array.swapAt(sIndex, i)
+            }
+        }
+    }
+    
+    // Comparing the value with the previous elements.
+    func insertionSort(_ array: inout [Int]) {
+        
+        for i in 1..<array.count {
+            
+            var j = i
+            
+            while j > 0 && array[j] < array [j - 1] {
+                array.swapAt(j, j - 1)
+                j -= 1
+            }
+        }
+    }
+}
+
+
+
 //MARK: - create a counter class where I can increase the count of a variable, in thread wise so that no other thigs can affect one
 
 
@@ -510,15 +628,15 @@ final class SemaphoreCounter {
 
 // MARK: -  Serial/Coucurrent/Sync/Async
 
-class ExecutionOne {
+class SerialAndConcurrentQueueExecution {
     var counter = 0
     
     init() {
 //        foo()
-        outputRealtedFuncUsingSerailQueueWithSync()
+//        outputRealtedFuncUsingSerailQueueWithSync()
 //        outputRealtedFuncUsingSerailQueueWithAsync()
 //        outputRealtedFuncUsingConcurrentQueueWithSync()
-//        outputRealtedFuncUsingConcurrentQueueWithAsync()
+        outputRealtedFuncUsingConcurrentQueueWithAsync()
 //        dispatchGroup()
     }
     
@@ -597,10 +715,10 @@ class ExecutionOne {
             }
         }
         
-        for i in 4...6 {
-            counter = i
-            print("In Second Place \(counter)")
-        }
+//        for i in 4...6 {
+//            counter = i
+//            print("In Second Place \(counter)")
+//        }
         
         concurrentQueue.async {
             for i in 7...9 {
@@ -634,10 +752,10 @@ class ExecutionOne {
             }
         }
         
-        for i in 4...6 {
-            counter = i
-            print("In Second Place \(counter)")
-        }
+//        for i in 4...6 {
+//            counter = i
+//            print("In Second Place \(counter)")
+//        }
         
         concurrentQueue.sync {
             for i in 7...9 {
@@ -670,10 +788,10 @@ class ExecutionOne {
             }
         }
         
-        for i in 4...6 {
-            counter = i
-            print("In Second Place \(counter)")
-        }
+//        for i in 4...6 {
+//            counter = i
+//            print("In Second Place \(counter)")
+//        }
         
         concurrentQueue.async {
             for i in 7...9 {
@@ -740,4 +858,6 @@ class ExecutionOne {
         print("All tasks are done!")
     }
 }
+
+
 
